@@ -1,6 +1,8 @@
 import json
 from abc import ABC, abstractmethod
 import requests
+from datetime import datetime
+from .functions import get_id  # точка означает, что я к этой функции буду обращаться в main, что лежит на каталог выше
 
 
 class API(ABC):
@@ -11,9 +13,9 @@ class API(ABC):
 
 class HeadHunter(API):
     """Класс для работы с API hh.ru"""
-    def __init__(self, text: str, area: int, per_page: int) -> None:
+    def __init__(self, text: str, area: str, per_page: int) -> None:
         self.text = text
-        self.area = area
+        self.id = get_id(area)
         self.per_page = per_page
         self.vacancies = self.get_vacancies()
 
@@ -21,7 +23,7 @@ class HeadHunter(API):
         """Вернет словарь с данными с сайта hh.ru"""
         params = {
             'text': self.text,
-            'area': self.area,
+            'area': self.id,
             'per_page': self.per_page
         }
         response = requests.get('https://api.hh.ru/vacancies', params=params)
@@ -38,9 +40,10 @@ class HeadHunter(API):
 
 class SuperJob(API):
     """Класс для работы с API Superjob.ru"""
-    def __init__(self, keyword: str, town: str) -> None:
+    def __init__(self, keyword: str, town: str, per_page: int) -> None:
         self.keyword = keyword
         self.town = town
+        self.per_page = per_page  # максимальное колличество вакансий, которое хочет видеть пользователь
         self.vacancies = self.get_vacancies()
 
     def get_vacancies(self):
@@ -53,13 +56,22 @@ class SuperJob(API):
         }
         response = requests.get('https://api.superjob.ru/2.0/vacancies', params=params, headers=headers)
         response_json = response.json()
+        # Нужен счетчик для того, чтобы ограничить колличество записанных вакансий
+        count = self.per_page
         return_data = []
         for data in response_json['objects']:
+            # Для начала переделаем дату под нужный нам формат:
+            data['date_published'] = str(datetime.fromtimestamp(data['date_published']))
+            data['date_published'] = data['date_published'].replace(' ', 'T')
+            # Теперь достаем нужные нам данные:
             new_data = {'profession': data['profession'], 'city': data['town']['title'],
                         'published date': data['date_published'], 'payment_from': data['payment_from']}
             if 'url' in data['client'].keys():
                 new_data['url'] = data['client']['url']
             return_data.append(new_data)
+            count -= 1
+            if count == 0:
+                break
         return return_data
 
 
@@ -107,4 +119,3 @@ class WorkWithHH(WorkWithAPI):
                 print('Вакансии не сохранены')
             else:
                 print('Нужно ввести N-нет или Y-да')
-
