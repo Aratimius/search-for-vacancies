@@ -1,0 +1,106 @@
+[
+  {
+    "city": "Москва",
+    "payment_from": 15000,
+    "profession": "Специалист службы поддержки с техническими знаниями / Волкер",
+    "published date": 1697113506,
+    "url": "https://yandex.ru"
+  },
+  {
+    "city": "Москва",
+    "payment_from": 15000,
+    "profession": "Специалист службы поддержки с техническими знаниями (TOOLS)",
+    "published date": 1697141123,
+    "url": "https://yandex.ru"
+  },
+  {
+    "city": "Москва",
+    "payment_from": 15000,
+    "profession": "Специалист службы поддержки с техническими знаниями (Браузер)",
+    "published date": 1697064604,
+    "url": "https://yandex.ru"
+  },
+  {
+    "city": "Москва",
+    "payment_from": 15000,
+    "profession": "Специалист службы поддержки с техническими знаниями",
+    "published date": 1697456952,
+    "url": "https://yandex.ru"
+  },
+  {
+    "city": "Москва",
+    "payment_from": 100000,
+    "profession": "Инженер-программист встраиваемых систем",
+    "published date": 1697462730,
+    "url": "http://mipt.ru"
+  },
+  {
+    "city": "Москва",
+    "payment_from": 18000,
+    "profession": "Ночной специалист службы технической поддержки (Яндекс Браузер)",
+    "published date": 1697566628,
+    "url": "https://yandex.ru"
+  },
+  {
+    "city": "Москва",
+    "payment_from": 0,
+    "profession": "Java-разработчик",
+    "published date": 1697178239,
+    "url": "https://yandex.ru"
+  },
+  {
+    "city": "Москва",
+    "payment_from": 0,
+    "profession": "Tech / Team Lead / Руководитель команды",
+    "published date": 1697537686,
+    "url": "http://hrbigg.tilda.ws"
+  },
+  {
+    "city": "Москва",
+    "payment_from": 100000,
+    "profession": "Frontend разработчик React",
+    "published date": 1697444271,
+    "url": null
+  },
+  {
+    "city": "Москва",
+    "payment_from": 0,
+    "profession": "Технический писатель",
+    "published date": 1697620370,
+    "url": "http://hrbigg.tilda.ws"
+  },
+  {
+    "city": "Москва",
+    "payment_from": 100000,
+    "profession": "Программист C#",
+    "published date": 1697523331,
+    "url": "http://www.ndb24.ru"
+  },
+  {
+    "city": "Москва",
+    "payment_from": 100000,
+    "profession": "Программист Linux",
+    "published date": 1697537673,
+    "url": null
+  },
+  {
+    "city": "Москва",
+    "payment_from": 200000,
+    "profession": "Главный разработчик",
+    "published date": 1697205751,
+    "url": "http://www.mascom.ru"
+  },
+  {
+    "city": "Москва",
+    "payment_from": 150000,
+    "profession": "Разработчик Python/ Python Developer",
+    "published date": 1697217774,
+    "url": "http://www.gutagroup.ru"
+  },
+  {
+    "city": "Москва",
+    "payment_from": 0,
+    "profession": "Программист / Разработчик на Python",
+    "published date": 1697544272
+  }
+]
