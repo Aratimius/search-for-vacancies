@@ -17,7 +17,6 @@ class HeadHunter(API):
         self.per_page = per_page
         self.vacancies = self.get_vacancies()
 
-
     def get_vacancies(self):
         """Вернет словарь с данными с сайта hh.ru"""
         params = {
@@ -43,8 +42,6 @@ class SuperJob(API):
         self.keyword = keyword
         self.town = town
         self.vacancies = self.get_vacancies()
-        with open('superjob.json', 'w') as file:
-            json.dump(self.vacancies, file, sort_keys=True, ensure_ascii=False)
 
     def get_vacancies(self):
         """Вернет словарь с данными с сайта hh.ru"""
@@ -64,4 +61,50 @@ class SuperJob(API):
                 new_data['url'] = data['client']['url']
             return_data.append(new_data)
         return return_data
+
+
+class WorkWithAPI(ABC):
+    @abstractmethod
+    def save_vacancies(self):
+        pass
+
+
+class WorkWithSuperjob(WorkWithAPI):
+    """Класс для обработки данных по вакансиям с Superjob"""
+    def __init__(self, superjob):
+        self.superjob = superjob
+
+    def save_vacancies(self):
+        """Сохраняет вакансии в файл"""
+        to_save = None
+        while to_save not in ['Y', 'N']:
+            to_save = input('Вы хотите сохранить вакансии в файл?[Y/N]: ')
+            if to_save == 'Y':
+                with open('superjob.json', 'w') as file:
+                    json.dump(self.superjob.vacancies, file, sort_keys=True, ensure_ascii=False)
+                    print('Вакансии сохранены')
+            elif to_save == 'N':
+                print('Вакансии не сохранены')
+            else:
+                print('Нужно ввести N-нет или Y-да')
+
+
+class WorkWithHH(WorkWithAPI):
+    """Класс для обработки данных по вакансиям с hh.ru"""
+    def __init__(self, hh):
+        self.hh = hh
+
+    def save_vacancies(self):
+        """Сохраняет вакансии в файл"""
+        to_save = None
+        while to_save not in ['Y', 'N']:
+            to_save = input('Вы хотите сохранить вакансии в файл?[Y/N]: ')
+            if to_save == 'Y':
+                with open('hh.json', 'w') as file:
+                    json.dump(self.hh.vacancies, file, sort_keys=True, ensure_ascii=False)
+                    print('Вакансии сохранены')
+            elif to_save == 'N':
+                print('Вакансии не сохранены')
+            else:
+                print('Нужно ввести N-нет или Y-да')
 
