@@ -31,10 +31,16 @@ class HeadHunter(API):
         return_data = []
         for data in response_json['items']:
             new_data = {'profession': data['name'], 'city': data['area']['name'],
-                        'published date': data['published_at'], 'payment_from': data['salary']['from']}
+                        'published_date': data['published_at']
+                        }
             if 'url' in data.keys():
                 new_data['url'] = data['url']
             return_data.append(new_data)
+            if 'salary' in data.keys() and isinstance(data['salary'], dict)\
+                    and data['salary'] is not None and data['salary']['from'] is not None:
+                new_data['payment_from'] = data['salary']['from']
+            else:
+                new_data['payment_from'] = 0
         return return_data
 
 
@@ -100,6 +106,11 @@ class WorkWithSuperjob(WorkWithAPI):
             else:
                 print('Нужно ввести N-нет или Y-да')
 
+    @staticmethod
+    def show_vacancies(vacancies):
+        for vacancy in vacancies:
+            print(vacancy)
+
 
 class WorkWithHH(WorkWithAPI):
     """Класс для обработки данных по вакансиям с hh.ru"""
@@ -119,3 +130,9 @@ class WorkWithHH(WorkWithAPI):
                 print('Вакансии не сохранены')
             else:
                 print('Нужно ввести N-нет или Y-да')
+
+    @staticmethod
+    def show_vacancies(vacancies):
+        for vacancy in vacancies:
+            print(vacancy)
+

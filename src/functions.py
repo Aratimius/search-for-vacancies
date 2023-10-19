@@ -20,5 +20,4 @@ def get_id(city):
     for letter in number_str:
         if letter.isdigit():
             number += letter
-
     return int(number)
