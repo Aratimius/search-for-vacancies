@@ -19,6 +19,9 @@ class HeadHunter(API):
         self.per_page = per_page
         self.vacancies = self.get_vacancies()
 
+    def __add__(self, other):
+        return self.vacancies + other.vacancies
+
     def get_vacancies(self):
         """Вернет словарь с данными с сайта hh.ru"""
         params = {
@@ -33,9 +36,11 @@ class HeadHunter(API):
             new_data = {'profession': data['name'], 'city': data['area']['name'],
                         'published_date': data['published_at']
                         }
+            # Не у всех вакансий есть url, а мне хотелось бы отслеживать url:
             if 'url' in data.keys():
                 new_data['url'] = data['url']
             return_data.append(new_data)
+            # Та же история с зарплатой, там вообще мрак:
             if 'salary' in data.keys() and isinstance(data['salary'], dict)\
                     and data['salary'] is not None and data['salary']['from'] is not None:
                 new_data['payment_from'] = data['salary']['from']
@@ -51,6 +56,9 @@ class SuperJob(API):
         self.town = town
         self.per_page = per_page  # максимальное колличество вакансий, которое хочет видеть пользователь
         self.vacancies = self.get_vacancies()
+
+    def __add__(self, other):
+        return self.vacancies + other.vacancies
 
     def get_vacancies(self):
         """Вернет словарь с данными с сайта hh.ru"""
@@ -71,7 +79,7 @@ class SuperJob(API):
             data['date_published'] = data['date_published'].replace(' ', 'T')
             # Теперь достаем нужные нам данные:
             new_data = {'profession': data['profession'], 'city': data['town']['title'],
-                        'published date': data['date_published'], 'payment_from': data['payment_from']}
+                        'published_date': data['date_published'], 'payment_from': data['payment_from']}
             if 'url' in data['client'].keys():
                 new_data['url'] = data['client']['url']
             return_data.append(new_data)
@@ -102,14 +110,19 @@ class WorkWithSuperjob(WorkWithAPI):
                     json.dump(self.superjob.vacancies, file, sort_keys=True, ensure_ascii=False)
                     print('Вакансии сохранены')
             elif to_save == 'N':
-                print('Вакансии не сохранены')
+                print('Вакансии не сохранены в superjob.json')
             else:
                 print('Нужно ввести N-нет или Y-да')
 
-    @staticmethod
-    def show_vacancies(vacancies):
-        for vacancy in vacancies:
+    def show_vacancies(self):
+        """Выводит вакасии в терминал"""
+        for vacancy in self.superjob.vacancies:
             print(vacancy)
+
+    def get_sorted(self, vacancies_key):
+        """Сортирует вакансии по заданному ключу"""
+        self.superjob.vacancies = sorted(self.superjob.vacancies, key=lambda operation: operation[vacancies_key],
+                                         reverse=True)
 
 
 class WorkWithHH(WorkWithAPI):
@@ -127,12 +140,42 @@ class WorkWithHH(WorkWithAPI):
                     json.dump(self.hh.vacancies, file, sort_keys=True, ensure_ascii=False)
                     print('Вакансии сохранены')
             elif to_save == 'N':
+                print('Вакансии не сохранены в hh.json')
+            else:
+                print('Нужно ввести N-нет или Y-да')
+
+    def show_vacancies(self):
+        for vacancy in self.hh.vacancies:
+            print(vacancy)
+
+    def get_sorted(self, vacancies_key):
+        """Сортирует вакансии по заданному ключу"""
+        self.hh.vacancies = sorted(self.hh.vacancies, key=lambda operation: operation[vacancies_key], reverse=True)
+
+
+class WorkWithAll(WorkWithAPI):
+    """Класс для обработки данных по всем вакансиям"""
+    def __init__(self, superjob: SuperJob, hh: HeadHunter):
+        self.vacancies = superjob + hh
+
+    def save_vacancies(self):
+        """Сохраняет вакансии в файл"""
+        to_save = None
+        while to_save not in ['Y', 'N']:
+            to_save = input('Вы хотите сохранить вакансии в файл?[Y/N]: ')
+            if to_save == 'Y':
+                with open('all_vacancies.json', 'w') as file:
+                    json.dump(self.vacancies, file, sort_keys=True, ensure_ascii=False)
+                    print('Вакансии сохранены all_vacancies.json')
+            elif to_save == 'N':
                 print('Вакансии не сохранены')
             else:
                 print('Нужно ввести N-нет или Y-да')
 
-    @staticmethod
-    def show_vacancies(vacancies):
-        for vacancy in vacancies:
+    def show_vacancies(self):
+        for vacancy in self.vacancies:
             print(vacancy)
 
+    def get_sorted(self, vacancies_key):
+        """Сортирует вакансии по заданному ключу"""
+        self.vacancies = sorted(self.vacancies, key=lambda operation: operation[vacancies_key], reverse=True)

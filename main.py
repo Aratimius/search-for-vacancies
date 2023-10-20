@@ -1,21 +1,75 @@
-import json
-
-from src.api import HeadHunter, SuperJob, WorkWithHH, WorkWithSuperjob
-import requests
+from src.api import HeadHunter, SuperJob, WorkWithHH, WorkWithSuperjob, WorkWithAll
 
 
-# name = input('Введите специальность: ')
-# number = int(input('Введите колличество страниц: '))
-# city_id = int(input('Введите id города: '))
+def lets_go():
+    print("""Программа для поиска и обработки данных по вакансиям.
+    1 - поиск вакансии на hh.ru
+    2 - поиск вакансий на Superjob
+    3 - поиск вакансий на hh.ru и Superjob
+    0 - выход
+После того, как вы определились с тем, на какой платформе будете искать:
+    'show' - показать найденные вакансии в консоли
+    'save' - сохранить вакансии в файл
+    'sort' - сортировать вакансии (1 - по зарплате, 2 - по дате публикации)
+    0 - вернуться обратно к выбору платформы по поиску вакансий""")
+
+    while True:
+        platform_input = int(input('Где будем искать?: '))
+        if platform_input == 0:
+            break
+        header = None
+        vacancies = None
+        if platform_input == 1:
+            header = 'Поиск на hh.ru:'
+            print(header)
+            text = input('Введите ключевое слово: ')
+            area = input('Введите город: ')
+            per_page = int(input('Введите максимальное число вакансий: '))
+            hh = HeadHunter(text, area, per_page)
+            vacancies = WorkWithHH(hh)
+        elif platform_input == 2:
+            header = 'Поиск на Superjob.ru:'
+            print(header)
+            text = input('Введите ключевое слово: ')
+            area = input('Введите город: ')
+            per_page = int(input('Введите максимальное число вакансий: '))
+            superjob = SuperJob(text, area, per_page)
+            vacancies = WorkWithSuperjob(superjob)
+        elif platform_input == 3:
+            header = 'Поиск на Superjob.ru и hh.ru:'
+            print(header)
+            text = input('Введите ключевое слово: ')
+            area = input('Введите город: ')
+            per_page = int(input("""Введите максимальное число вакансий, c hh и superjob
+(если, к примеру, вы вводите одну вакансию, то придет одна ваканчия с hh и одна c Superjob): """))
+            superjob = SuperJob(text, area, per_page)
+            hh = HeadHunter(text, area, per_page)
+            vacancies = WorkWithAll(superjob, hh)
+        else:
+            print('Нет такой функции')
+        while True:
+            print(header, '\n', """'show' - показать найденные вакансии в консоли
+ 'save' - сохранить вакансии в файл
+ 'sort' - сортировать вакансии (1 - по зарплате, 2 - по дате публикации)
+ 0 - вернуться обратно к выбору платформы по поиску вакансий""")
+            actions_input = input('Ваши действия: ')
+            if actions_input == 'save':
+                vacancies.save_vacancies()
+            elif actions_input == 'show':
+                vacancies.show_vacancies()
+            elif actions_input == 'sort':
+                sort_input = int(input('1 - по зарплате, 2 - по дате публикации: '))
+                if sort_input == 1:
+                    vacancies.get_sorted('payment_from')
+                elif sort_input == 2:
+                    vacancies.get_sorted('published_date')
+                else:
+                    print('Нет такой функции')
+            elif actions_input == '0':
+                break
+            else:
+                print('Нет такой функции')
 
 
-# superjob = SuperJob('python разработчик', 'Москва', 20)
-# save = WorkWithSuperjob(superjob)
-# # save.save_vacancies()
-# save.show_vacancies(superjob.vacancies)
-
-# hh_ru = HeadHunter('junior python', 'Санкт-Петербург', 15)
-# print(hh_ru.id)
-# save = WorkWithHH(hh_ru)
-# # save.save_vacancies()
-# save.show_vacancies(hh_ru.vacancies)
+if __name__ == '__main__':
+    lets_go()
