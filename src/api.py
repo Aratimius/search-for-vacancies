@@ -124,9 +124,9 @@ class WorkWithSuperjob(WorkWithVacancies, WorkWithAPI):
             if to_save == 'Y':
                 with open('superjob.json', 'w') as file:
                     json.dump(self.vacancies, file, sort_keys=True, ensure_ascii=False)
-                    print('Вакансии сохранены')
+                    print('Вакансии сохранены в superjob.json')
             elif to_save == 'N':
-                print('Вакансии не сохранены в superjob.json')
+                print('Вакансии не сохранены')
             else:
                 print('Нужно ввести N-нет или Y-да')
 
@@ -145,9 +145,9 @@ class WorkWithHH(WorkWithVacancies, WorkWithAPI):
             if to_save == 'Y':
                 with open('hh.json', 'w') as file:
                     json.dump(self.vacancies, file, sort_keys=True, ensure_ascii=False)
-                    print('Вакансии сохранены')
+                    print('Вакансии сохранены в hh.json')
             elif to_save == 'N':
-                print('Вакансии не сохранены в hh.json')
+                print('Вакансии не сохранены')
             else:
                 print('Нужно ввести N-нет или Y-да')
 
