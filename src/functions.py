@@ -20,4 +20,7 @@ def get_id(city):
     for letter in number_str:
         if letter.isdigit():
             number += letter
-    return int(number)
+    try:
+        return int(number)
+    except ValueError:
+        print('Упс! Что-то пошло не так...Попробуйте снова.')

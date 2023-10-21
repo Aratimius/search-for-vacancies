@@ -95,10 +95,26 @@ class WorkWithAPI(ABC):
         pass
 
 
-class WorkWithSuperjob(WorkWithAPI):
+class WorkWithVacancies:
+    def __init__(self, vacancies):
+        super().__init__()
+        self.vacancies = vacancies
+
+    def show_vacancies(self):
+        """Выводит вакасии в терминал"""
+        for vacancy in self.vacancies:
+            print(vacancy)
+
+    def get_sorted(self, vacancies_key):
+        """Сортирует вакансии по заданному ключу"""
+        self.vacancies = sorted(self.vacancies, key=lambda operation: operation[vacancies_key], reverse=True)
+
+
+class WorkWithSuperjob(WorkWithVacancies, WorkWithAPI):
     """Класс для обработки данных по вакансиям с Superjob"""
-    def __init__(self, superjob):
-        self.superjob = superjob
+    def __init__(self, vacancies):
+        super().__init__(vacancies)
+        self.vacancies = vacancies.vacancies
 
     def save_vacancies(self):
         """Сохраняет вакансии в файл"""
@@ -107,28 +123,19 @@ class WorkWithSuperjob(WorkWithAPI):
             to_save = input('Вы хотите сохранить вакансии в файл?[Y/N]: ')
             if to_save == 'Y':
                 with open('superjob.json', 'w') as file:
-                    json.dump(self.superjob.vacancies, file, sort_keys=True, ensure_ascii=False)
+                    json.dump(self.vacancies, file, sort_keys=True, ensure_ascii=False)
                     print('Вакансии сохранены')
             elif to_save == 'N':
                 print('Вакансии не сохранены в superjob.json')
             else:
                 print('Нужно ввести N-нет или Y-да')
 
-    def show_vacancies(self):
-        """Выводит вакасии в терминал"""
-        for vacancy in self.superjob.vacancies:
-            print(vacancy)
 
-    def get_sorted(self, vacancies_key):
-        """Сортирует вакансии по заданному ключу"""
-        self.superjob.vacancies = sorted(self.superjob.vacancies, key=lambda operation: operation[vacancies_key],
-                                         reverse=True)
-
-
-class WorkWithHH(WorkWithAPI):
+class WorkWithHH(WorkWithVacancies, WorkWithAPI):
     """Класс для обработки данных по вакансиям с hh.ru"""
-    def __init__(self, hh):
-        self.hh = hh
+    def __init__(self, vacancies):
+        super().__init__(vacancies)
+        self.vacancies = vacancies.vacancies
 
     def save_vacancies(self):
         """Сохраняет вакансии в файл"""
@@ -137,26 +144,19 @@ class WorkWithHH(WorkWithAPI):
             to_save = input('Вы хотите сохранить вакансии в файл?[Y/N]: ')
             if to_save == 'Y':
                 with open('hh.json', 'w') as file:
-                    json.dump(self.hh.vacancies, file, sort_keys=True, ensure_ascii=False)
+                    json.dump(self.vacancies, file, sort_keys=True, ensure_ascii=False)
                     print('Вакансии сохранены')
             elif to_save == 'N':
                 print('Вакансии не сохранены в hh.json')
             else:
                 print('Нужно ввести N-нет или Y-да')
 
-    def show_vacancies(self):
-        for vacancy in self.hh.vacancies:
-            print(vacancy)
 
-    def get_sorted(self, vacancies_key):
-        """Сортирует вакансии по заданному ключу"""
-        self.hh.vacancies = sorted(self.hh.vacancies, key=lambda operation: operation[vacancies_key], reverse=True)
-
-
-class WorkWithAll(WorkWithAPI):
+class WorkWithAll(WorkWithVacancies, WorkWithAPI):
     """Класс для обработки данных по всем вакансиям"""
-    def __init__(self, superjob: SuperJob, hh: HeadHunter):
-        self.vacancies = superjob + hh
+    def __init__(self, vacancies, other_vacancies):
+        super().__init__(vacancies)
+        self.vacancies = vacancies + other_vacancies
 
     def save_vacancies(self):
         """Сохраняет вакансии в файл"""
@@ -172,10 +172,3 @@ class WorkWithAll(WorkWithAPI):
             else:
                 print('Нужно ввести N-нет или Y-да')
 
-    def show_vacancies(self):
-        for vacancy in self.vacancies:
-            print(vacancy)
-
-    def get_sorted(self, vacancies_key):
-        """Сортирует вакансии по заданному ключу"""
-        self.vacancies = sorted(self.vacancies, key=lambda operation: operation[vacancies_key], reverse=True)
