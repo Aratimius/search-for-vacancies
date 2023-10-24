@@ -1,4 +1,5 @@
-from src.api import HeadHunter, SuperJob, WorkWithHH, WorkWithSuperjob, WorkWithAll
+from src.get_api import HeadHunter, SuperJob
+from src.work_api import WorkWithVacancies
 
 
 def lets_go():
@@ -26,7 +27,7 @@ def lets_go():
             area = input('Введите город: ')
             per_page = int(input('Введите максимальное число вакансий: '))
             hh = HeadHunter(text, area, per_page)
-            vacancies = WorkWithHH(hh)
+            vacancies = WorkWithVacancies(hh)
         elif platform_input == 2:
             header = 'Поиск на Superjob.ru:'
             print(header)
@@ -34,7 +35,7 @@ def lets_go():
             area = input('Введите город: ')
             per_page = int(input('Введите максимальное число вакансий: '))
             superjob = SuperJob(text, area, per_page)
-            vacancies = WorkWithSuperjob(superjob)
+            vacancies = WorkWithVacancies(superjob)
         elif platform_input == 3:
             header = 'Поиск на Superjob.ru и hh.ru:'
             print(header)
@@ -44,7 +45,7 @@ def lets_go():
 (если, к примеру, вы вводите одну вакансию, то придет одна ваканчия с hh и одна c Superjob): """))
             superjob = SuperJob(text, area, per_page)
             hh = HeadHunter(text, area, per_page)
-            vacancies = WorkWithAll(superjob, hh)
+            vacancies = WorkWithVacancies(superjob, hh)
         else:
             print('Нет такой функции')
         while True:
@@ -54,7 +55,8 @@ def lets_go():
  0 - вернуться обратно к выбору платформы по поиску вакансий""")
             actions_input = input('Ваши действия: ')
             if actions_input == 'save':
-                vacancies.save_vacancies()
+                filename = input('В какой файл сохранить ваканчии?: ')
+                vacancies.save_vacancies(filename)
             elif actions_input == 'show':
                 vacancies.show_vacancies()
             elif actions_input == 'sort':
